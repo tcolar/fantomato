@@ -1,0 +1,30 @@
+settings file for repo root
+
+template for view ?
+
+support for multiple domains
+
+support for dokuwiki / jotwiki syntax
+
+code highlighting
+
+online editor / ACE
+online image upload
+
+encode email /mailto
+
+page edit locking ?
+
+Google analytics
+
+addThis support
+
+admin page(s)
+
+google sitemap support
+
+RSS/atom feed support
+
+search support
+
+comments / captcha
