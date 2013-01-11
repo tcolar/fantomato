@@ -1,135 +1,73 @@
-//
 // History:
-//   Aug 22, 2012 tcolar Creation
+//  Jan 09 12 tcolar Creation
 //
 
 using draft
 using web
 using webmod
-using concurrent
-using markdown
 
 **
-** Master Server mod
-** Route and serve the pages
+** Server entry point
 **
 const class Fantomato : DraftMod
 {
-  const Log log := Fantomato#.pod.log
+  static const Log log := Fantomato#.pod.log
+  static const GlobalSettings settings := GlobalSettings.load
 
   ** Constructor.
   new make()
   {
-    // Rest of web services. Index pages, browsing etc ...
+
     pubDir = null
     logDir = `./log/`.toFile
     router = Router {
       routes = [
-      // TODO: /FavIcon.ico
-        Route("/index", "GET", #home),
-        // Todo : /img/{*}
-        // Todo : /{*}
+        // "index" root to "home"
+        Route("/", "GET", PageWeblet#page),
+        // file in default namespace (... kinda lame, draft should support subMod with paths ?)
+        Route("/{namespace}/files/{file}", "GET", #serveFile),
+        Route("/{namespace}/files/{a}/{file}", "GET", #serveFile),
+        Route("/{namespace}/files/{a}/{b}/{file}", "GET", #serveFile),
+        Route("/{namespace}/files/{a}/{b}/{c}/{file}", "GET", #serveFile),
+        Route("/{namespace}/files/{a}/{b}/{c}/{d}/{file}", "GET", #serveFile),
+        // page in default namespace
+        Route("/{page}", "GET", PageWeblet#page),
+        // file in named namespace
+        Route("/{namespace}/files/{file}", "GET", #serveFile),
+        // page in named namespace
+        Route("/{namespace}/{page}", "GET", PageWeblet#page),
       ]
     }
   }
 
-  ** Send a page
-  Void page(Str page)
+  ** Serve files from data folder
+  Void serveFile(Str:Str args)
   {
-    content := read(page)
+    item := args["file"]
+    if(args.containsKey("d")) item = args["d"]+"/$item"
+    if(args.containsKey("c")) item = args["c"]+"/$item"
+    if(args.containsKey("b")) item = args["b"]+"/$item"
+    if(args.containsKey("a")) item = args["a"]+"/$item"
+    ns := args["namespace"]
+    file := settings.root + `$ns/files/$item`
 
-    if(content == null)
+    // Safety check
+    if(file.normalize.pathStr.startsWith(settings.root.pathStr))
     {
-      log.info("$page not found !")
-      res.headers["Content-Type"] = "text/html"
-      res.statusCode = 404
-      res.out.print(top(page) + "404 - Page not found" + bottom).close
-      return
+      FileWeblet(file).onGet
     }
-
-    // ok send the page
-    log.info("Serving $page .")
-    res.headers["Content-Type"] = "text/html"
-    res.statusCode = 200
-
-    res.out.print(top(page) + content + bottom).close
-  }
-
-  ** Just to map index to home
-  Void home()
-  {
-    page("home")
-  }
-
-  Str top(Str pageName)
-  {
-    top := read("_top")
-    vars := [ "title"          : pageName.replace("_"," "),
-              "generatedDate"  : DateTime(Pod.of(this).meta["build.ts"]).toHttpStr,
-              "bloglist" : read("_blog_list")]
-    top = replaceVars(top, vars)
-    return top
-  }
-
-  Str bottom()
-  {
-    read("_bottom")
-  }
-
-  ** Read the page (lazy cached)
-  ** Returns null if missing / failed
-  Str? read(Str page)
-  {
-    p := page.toStr
-    content := cacheGet(p)
-    if(content == null)
-    {
-      // Look for page.html or page.md
-
-      file := Pod.of(this).file("/pages/${page}.html".toUri, false)
-      if(file == null)
-        file = Pod.of(this).file("/pages/${page}.md".toUri, false)
-
-      if(file == null)
-        return null
-
-      content = file.readAllStr
-
-      if(file.ext == "md")
-      {
-        // convert Markdown to Html
-        content = Markdown().markdown(content)
-      }
-
-      log.info("Adding to cache : $page")
-      cacheSet(p, content)
-    }
-    return content
-  }
-
-  Str? cacheGet(Str key)
-  {
-    if(! Actor.locals.containsKey("fantomato.cache"))
-      Actor.locals["fantomato.cache"] = Str:Str[:]
-    map := Actor.locals["fantomato.cache"] as Str:Str
-    return map[key]
-  }
-
-  Void cacheSet(Str key, Str val)
-  {
-    if(! Actor.locals.containsKey("fantomato.cache"))
-      Actor.locals["fantomato.cache"] = Str:Str[:]
-    map := Actor.locals["fantomato.cache"] as Str:Str
-    map[key] = val
-  }
-
-  ** Replace vars in the page
-  ** vars are varName: value
-  ** in the page they are as {{varName}}
-  Str replaceVars(Str page, Str:Str vars)
-  {
-    vars.each |val, varName| {page = page.replace("{{$varName}}", val)}
-    return page
   }
 }
+
+** Server pod resources
+const class PodMod : WebMod
+{
+  override Void onGet()
+  {
+    target := req.uri.path[1..-1].join("/")
+    echo("target: $target")
+    FileMod{file = Pod.of(this).file(target.toUri)}.onGet
+  }
+}
+
 

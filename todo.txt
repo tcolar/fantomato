@@ -1,3 +1,5 @@
+new page -> check name is not admin, files, pod, etc ...
+
 settings file for repo root
 
 template for view ?
@@ -6,7 +8,7 @@ support for multiple domains
 
 support for dokuwiki / jotwiki syntax
 
-code highlighting
+code highlighting usinf fantom syntax pod
 
 online editor / ACE
 online image upload
