@@ -14,7 +14,6 @@ class Build : BuildPod
                 "concurrent 1.0+", "markdown 1.0+", "netColarUtils 1.0+",
                 "mustache 1.0+"]
     srcDirs = [`fan/`]
-    resDirs = [`res/`,`res/wiki/`,`res/wiki/buttons/`,`res/wiki/editor/`,`res/wiki/smileys/`]
     javaDirs = [`java/`]
     version = Version("1.0.0")
   }

@@ -55,8 +55,8 @@ class PageWeblet : Weblet
   ** Also insert variable values in the template as well
   internal Str templatize(Str ns, Str content, Str pageName)
   {
-    tpl := read(ns, "_template")
-      ?: "<html><body>MISSING TEMPLATE : '_template.html' for namespace $ns !</body><html>"
+    tpl := read(ns, "page", true)
+      ?: "<html><body>MISSING TEMPLATE : 'page' for namespace $ns !</body><html>"
 
     // pocess the template with mustache
     args := [ "title"          : pageName.replace("_"," "),
@@ -67,6 +67,7 @@ class PageWeblet : Weblet
             ]
 
     tpl = Mustache(tpl.in).render(args)
+        + "\n\n<!--Powered By FantoMato http://www.status302.com/fantomato/-->\n"
 
     return tpl
   }
@@ -75,32 +76,39 @@ class PageWeblet : Weblet
   ** lambda to import page bits in a template
   Func importLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
   {
-    ns := req.uri.path.size > 1 ? req.uri.path[0] : "default"
-    echo("ns: $ns")
+    ns := getNs
     return read(ns, var.trim) ?: ""
   }
 
   ** lambda to set class="active" if we are on the given page
   Func activePathLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
   {
-    page := req.uri.path.last
-    echo("page: $page")
+    page := req.uri.path.last ?: "home"
     return page.trim == var.trim ? "class='active'" : ""
+  }
+
+  internal Str getNs()
+  {
+    if(req.uri.path.size > 1)
+      return req.uri.path[0]
+    return req.uri.pathOnly.toStr.endsWith("/") ? req.uri.path[0] : "default"
   }
 
   ** Read the page (lazy cached)
   ** Returns null if missing / failed
-  internal Str? read(Str ns, Str pageName)
+  internal Str? read(Str ns, Str pageName, Bool isTpl := false)
   {
     p := "${ns}:${pageName}"
     cached := cacheGet(p)
 
+    Str base := isTpl ? "tpl/$ns/" : "$ns/pages/"
+
     // Look for page.html or page.md
-    file := Fantomato.settings.root + `$ns/pages/${pageName}.html`
+    file := Fantomato.settings.root + `$base${pageName}.html`
     if( ! file.exists)
-      file = Fantomato.settings.root + `$ns/pages/${pageName}.md`
+      file = Fantomato.settings.root + `$base${pageName}.md`
     if( ! file.exists)
-      file = Fantomato.settings.root + `$ns/pages/${pageName}.txt`
+      file = Fantomato.settings.root + `$base${pageName}.txt`
 
     if(! file.exists)
       return null
@@ -116,6 +124,7 @@ class PageWeblet : Weblet
       }
       else if(file.ext == "txt")
       {
+        // jotwiki format
         content = WikiProcessor().process(content)
       }
 

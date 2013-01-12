@@ -1,0 +1,42 @@
+<!-- Very Minimal (but ugly) example template -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+      <!-- Note the variables: title, genratedDate. They will be filled in by the wiki -->
+      <title>{{title}}</title>
+      <meta name="date" content='{{generatedDate}}' />
+
+      <!-- Note that all template resources should be fetched like this (tpl/*)-->
+      <link rel='stylesheet' type='text/css' href='tpl/standard.css' />
+
+      <!-- You will probably want to include your extra custom css here -->
+      <link rel='stylesheet' type='text/css' href='tpl/template.css' />
+
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+  <div>
+    <div class="top">
+      Links : <!-- Menubar example -->
+      <!-- #ap will call a wiki method that will add "class='active'" if the path matches the arg-->
+      <span {{#ap}}page1{{/ap}}><a href="page1">Page1(.md)</a></span>
+      <span {{#ap}}page2{{/ap}}><a href="page2">Page2(.txt)</a></span>
+      <span {{#ap}}page3{{/ap}}><a href="page3">Page3(.html)</a></span>
+    </div>
+
+    <div class="nav">
+      <!-- Example of importing a subpage-->
+      {{#import}}
+        sub
+      {{/import}}
+    </div>
+
+    <div class="content">
+     <!-- The page content, Nte the use of '&' so the content does not get HTML escaped-->
+      {{ & content }}
+    </div>
+  </div>
+  </body>
+</html>
+

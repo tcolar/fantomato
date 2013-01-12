@@ -1,32 +1,35 @@
+comments / captcha -> must have
+
+global options:  addthis, build sitemap, enable search, clear logs etc ...
+page options ? (comments on/off, template, author name, nb comment, extra meta)
+namespace options -> template, Google analytics / enable comments / comments per page /
+  ... use capctha / email comments to/ enable search(across ns ?, how many results)
+
+builtin addThis support -> should have
+
+builtin Google analytics (in tpl for now) -> should have
+
+google sitemap support (important)
+
+encode email /mailto (fantom side for both .txt, .md etc...)
+
+new search engine support -> build one ?
+
+RSS/atom feed support
+
+send emails or tweets when new comments
+
+code highlighting usinfg fantom syntax pod
+
 new page -> check name is not admin, files, pod, etc ...
-
-settings file for repo root
-
-template for view ?
-
-support for multiple domains
-
-support for dokuwiki / jotwiki syntax
-
-code highlighting usinf fantom syntax pod
 
 online editor / ACE
 online image upload
 
-encode email /mailto
-
 page edit locking ?
-
-Google analytics
-
-addThis support
 
 admin page(s)
 
-google sitemap support
 
-RSS/atom feed support
 
-search support
 
-comments / captcha

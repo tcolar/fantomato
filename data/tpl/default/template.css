@@ -1,0 +1,9 @@
+/*
+Example custom CSS, replace this with your own CSS
+Very basic and ugly, for demo pusposes
+*/
+.top{width : 100%;background-color : #CCCCCC;}
+.nav{float : left;width : 30%;background-color : #DDDDDD;}
+.content{float : right;width : 70%;background-color : #EEEEEE;}
+.active{font-weight : bold;}
+

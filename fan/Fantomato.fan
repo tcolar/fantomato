@@ -17,57 +17,59 @@ const class Fantomato : DraftMod
   ** Constructor.
   new make()
   {
-
     pubDir = null
     logDir = `./log/`.toFile
     router = Router {
       routes = [
         // "index" root to "home"
         Route("/", "GET", PageWeblet#page),
-        // file in default namespace (... kinda lame, draft should support subMod with paths ?)
-        Route("/{namespace}/files/{file}", "GET", #serveFile),
-        Route("/{namespace}/files/{a}/{file}", "GET", #serveFile),
-        Route("/{namespace}/files/{a}/{b}/{file}", "GET", #serveFile),
-        Route("/{namespace}/files/{a}/{b}/{c}/{file}", "GET", #serveFile),
-        Route("/{namespace}/files/{a}/{b}/{c}/{d}/{file}", "GET", #serveFile),
+        // file items
+        Route("/files/*", "GET", #serveFileItem),
+        Route("/{namespace}/files/*", "GET", #serveFileItem),
+        // template items
+        Route("/tpl/*", "GET", #serveTplItem),
+        Route("/{namespace}/tpl/*", "GET", #serveTplItem),
         // page in default namespace
         Route("/{page}", "GET", PageWeblet#page),
-        // file in named namespace
-        Route("/{namespace}/files/{file}", "GET", #serveFile),
         // page in named namespace
         Route("/{namespace}/{page}", "GET", PageWeblet#page),
       ]
     }
   }
 
-  ** Serve files from data folder
-  Void serveFile(Str:Str args)
+  Void serveFileItem(Str:Str args)
   {
-    item := args["file"]
-    if(args.containsKey("d")) item = args["d"]+"/$item"
-    if(args.containsKey("c")) item = args["c"]+"/$item"
-    if(args.containsKey("b")) item = args["b"]+"/$item"
-    if(args.containsKey("a")) item = args["a"]+"/$item"
-    ns := args["namespace"]
-    file := settings.root + `$ns/files/$item`
+    ns := args["namespace"] ?: "default"
+    i := args.containsKey("namespace") ? 2 : 1
+    path := req.uri.path[i .. -1].join("/")
+    uri := `$ns/files/$path`
+    serveFile(uri)
+  }
+
+  Void serveTplItem(Str:Str args)
+  {
+    ns := args["namespace"] ?: "default"
+    i := args.containsKey("namespace") ? 2 : 1
+    path := req.uri.path[i .. -1].join("/")
+    uri := `tpl/$ns/$path`
+    // If a file is not present in a custom namepace template, get it from default template
+    // This allow overriding only a few files in custm templates
+    if( ! (settings.root + uri).exists)
+      uri = `tpl/default/$path`
+    serveFile(uri)
+  }
+
+  ** Serve files from data folder
+  Void serveFile(Uri path)
+  {
+    file := settings.root + path
 
     // Safety check
-    if(file.normalize.pathStr.startsWith(settings.root.pathStr))
+    // could use normalize too but then symlink break ... alow or not ?
+    if(file.pathStr.startsWith(settings.root.pathStr))
     {
       FileWeblet(file).onGet
     }
   }
 }
-
-** Server pod resources
-const class PodMod : WebMod
-{
-  override Void onGet()
-  {
-    target := req.uri.path[1..-1].join("/")
-    echo("target: $target")
-    FileMod{file = Pod.of(this).file(target.toUri)}.onGet
-  }
-}
-
 
