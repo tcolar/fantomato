@@ -7,6 +7,7 @@ using webmod
 using web
 using markdown
 using mustache
+using netColarUtils
 
 **
 ** PageWeblet : Serves pages
@@ -30,33 +31,46 @@ class PageWeblet : Weblet
     if(page ==null || page.trim.isEmpty) page = "home"
     if(ns == null || ns.trim.isEmpty) ns = "default"
 
+    nsSettings := NsSettings.loadFor(ns)
+    pageOpts := PageSettings.loadFor(ns, page)
+
     content := read(ns, page)
 
     if(content == null)
     {
-      Fantomato.log.info("Not found : $ns:$page")
+      if(page.lower != "favicon.ico"  && page.lower != "robots.txt")
+        Fantomato.log.info("Not found : $ns:$page")
       res.headers["Content-Type"] = "text/html"
       res.statusCode = 404
       notFound := read(ns, "404") ?: "<b>Error 404 -> Page not found : $page</b>"
-      res.out.print(templatize(ns, notFound, page)).close
+      res.out.print(templatize(ns, notFound, page, nsSettings, pageOpts)).close
       return
     }
 
     // ok send the page
-    Fantomato.log.info("Serving $page .")
+    Fantomato.log.info("Sending $page")
     res.headers["Content-Type"] = "text/html"
     res.statusCode = 200
 
-    wholePage := templatize(ns, content, page)
+    wholePage := templatize(ns, content, page, nsSettings, pageOpts)
     res.out.print(wholePage).close
   }
 
   ** Create the whole page by inserting the content into the template
   ** Also insert variable values in the template as well
-  internal Str templatize(Str ns, Str content, Str pageName)
+  internal Str templatize(Str ns, Str content, Str pageName,
+                          NsSettings nsSettings, PageSettings pageOpts)
   {
-    tpl := read(ns, "page", true)
-      ?: "<html><body>MISSING TEMPLATE : 'page' for namespace $ns !</body><html>"
+    tplName := nsSettings.template
+    tplPage := pageOpts.page
+    file := GlobalSettings.root + `tpl/$tplName/$tplPage`
+    Str? tpl := (Str?) Cache.readCachedFile(file)?.content
+    if(tpl == null)
+    {
+      Fantomato.log.info("No template for $ns ! Will use the default one.")
+      tpl = (Str?) Cache.readCachedFile(GlobalSettings.root + `tpl/default/$tplPage`)?.content
+      tpl = tpl ?: "<html><body>MISSING TEMPLATE : 'page' for namespace $ns !</body><html>"
+    }
 
     // pocess the template with mustache
     args := [ "title"          : pageName.replace("_"," "),
@@ -64,7 +78,38 @@ class PageWeblet : Weblet
               "content"        : content,
               "import"         : importLambda,
               "ap"             : activePathLambda,
+              "googleAnalytics": nsSettings.getGaCode,
+               // in case somebody rather use custom GA js code
+              "gaId"           : nsSettings.googleAnalyticsId,
+              "author"         : pageOpts.author,
+              "addThisId"      : nsSettings.addThisId,
             ]
+
+    if( ! nsSettings.addThisId.isEmpty)
+      args["addThisEnabled"] = true
+
+    // user defined vars
+    nsSettings.variables.each |v, k| {args[k] = v}
+    pageOpts.variables.each |v, k| {args[k] = v}
+
+    // comments
+    // TODO : move to method
+    nbComments := nsSettings.commentsPerPage
+    if(nbComments > 0 && pageOpts.commentsEnabled)
+    {
+      folder := GlobalSettings.root + `$ns/pages/${pageName}/comments/`
+      // file name are timestamps, so ordering from higher(newer) to lower(older)
+      // TODO: check folder exists
+      files := folder.listFiles.sort |a, b -> Int| { -(a.name <=> b.name)}
+      if(files.size > nbComments)
+        files = files[0 ..< nbComments]
+      comments := PageComment[,]
+      files.each
+      {
+        // TODO read it
+      }
+      args["comments"] = comments
+    }
 
     tpl = Mustache(tpl.in).render(args)
         + "\n\n<!--Powered By FantoMato http://www.status302.com/fantomato/-->\n"
@@ -91,73 +136,27 @@ class PageWeblet : Weblet
   {
     if(req.uri.path.size > 1)
       return req.uri.path[0]
-    return req.uri.pathOnly.toStr.endsWith("/") ? req.uri.path[0] : "default"
+    path := req.uri.pathOnly.toStr
+    return req.uri.path.isEmpty || ! path.endsWith("/") ? "default" : req.uri.path[0]
   }
 
   ** Read the page (lazy cached)
   ** Returns null if missing / failed
-  internal Str? read(Str ns, Str pageName, Bool isTpl := false)
+  internal Str? read(Str ns, Str pageName)
   {
-    p := "${ns}:${pageName}"
-    cached := cacheGet(p)
-
-    Str base := isTpl ? "tpl/$ns/" : "$ns/pages/"
+    Str base := "$ns/pages/${pageName}"
 
     // Look for page.html or page.md
-    file := Fantomato.settings.root + `$base${pageName}.html`
+    file := GlobalSettings.root + `${base}.html`
     if( ! file.exists)
-      file = Fantomato.settings.root + `$base${pageName}.md`
+      file = GlobalSettings.root + `${base}.md`
     if( ! file.exists)
-      file = Fantomato.settings.root + `$base${pageName}.txt`
+      file = GlobalSettings.root + `${base}.txt`
 
     if(! file.exists)
       return null
 
-    if(cached == null || file.modified > cached.ts)
-    {
-      content := file.readAllStr
-
-      if(file.ext == "md")
-      {
-        // convert Markdown to Html
-        content = Markdown().markdown(content)
-      }
-      else if(file.ext == "txt")
-      {
-        // jotwiki format
-        content = WikiProcessor().process(content)
-      }
-
-      Fantomato.log.info("Adding to cache : $p")
-      cached = CachedPage(content, file.modified)
-      cacheSet(p, cached)
-    }
-
-    return cached.text
-  }
-
-  internal CachedPage? cacheGet(Str key)
-  {
-    if(! Actor.locals.containsKey("fantomato.cache"))
-      Actor.locals["fantomato.cache"] = Str:CachedPage[:]
-    map := Actor.locals["fantomato.cache"] as Str:CachedPage
-    return map[key]
-  }
-
-  internal Void cacheSet(Str key, CachedPage page)
-  {
-    if(! Actor.locals.containsKey("fantomato.cache"))
-      Actor.locals["fantomato.cache"] = Str:CachedPage[:]
-    map := Actor.locals["fantomato.cache"] as Str:CachedPage
-    map[key] = page
-  }
-
-  ** Replace vars in the template
-  ** vars are varName: value
-  ** in the page they are as {{varName}}
-  internal Str replaceVars(Str page, Str:Str vars)
-  {
-    vars.each |val, varName| {page = page.replace("{~$varName~}", val)}
-    return page
+    cached := Cache.readCachedFile(file, "parse")
+    return cached.content as Str
   }
 }

@@ -7,31 +7,48 @@ using netColarUtils
 **
 ** GlobalSettings
 **
+@Serializable
 const class GlobalSettings
 {
-  static const File standard := Env.cur.workDir + `etc/fantomato/fantomato.props`
+  @Transient
+  static const File etcFile := Env.cur.workDir + `etc/fantomato/fantomato.props`
 
-  static GlobalSettings load(File file := standard)
+  ** Not a setting (seaparate file)
+  @Transient
+  static const File root := readRoot
+
+  static File readRoot()
   {
-    if(! file.exists)
+    if(! etcFile.exists)
     {
-      Fantomato.log.err("Warning : $file.pathStr missing ! won't run.")
+      err := Err("Warning : $etcFile.pathStr missing ! won't run.")
+      Fantomato.log.err("Error", err)
+      err.trace
+      throw err
     }
-    return (GlobalSettings) SettingUtils.load(file, GlobalSettings#)
+    dataRoot := etcFile.readProps["dataRoot"]?.trim ?: "null"
+
+    if(! dataRoot.endsWith(File.sep))
+      dataRoot = dataRoot + File.sep
+    root := File.os(dataRoot)
+    if( ! root.exists)
+    {
+      err := Err("Warning : dataRoot doesn't exist (${root.osPath})!.")
+      Fantomato.log.err("Error", err)
+      err.trace
+      throw err
+    }
+    return root
+  }
+
+  static GlobalSettings load()
+  {
+    return (GlobalSettings) JsonSettings.load(root + `fantorepo.conf`, GlobalSettings#)
   }
 
   ** Default constructor with it-block
   new make(|This|? f := null)
   {
     if (f != null) f(this)
-    if(! dataRoot.endsWith(File.sep))
-      dataRoot = dataRoot + File.sep
-    root = File.os(dataRoot).normalize
   }
-
-  @Setting{ help = ["Folder where all the data will go."] }
-  const Str dataRoot
-
- ** Transient root as normalized file
-  @Transient const File root
 }

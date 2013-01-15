@@ -1,15 +1,34 @@
-comments / captcha -> must have
 
-global options:  addthis, build sitemap, enable search, clear logs etc ...
-page options ? (comments on/off, template, author name, nb comment, extra meta)
-namespace options -> template, Google analytics / enable comments / comments per page /
-  ... use capctha / email comments to/ enable search(across ns ?, how many results)
+=== Prio 1: ===
 
-builtin addThis support -> should have
+Show comments
 
-builtin Google analytics (in tpl for now) -> should have
+//global options:  addthis, build sitemap, enable search, clear logs etc ...
+//page options ? (comments on/off, template, author name, nb comment, extra meta)
+//namespace options -> template, Google analytics / enable comments / comments per page /
+//  ... use capctha / email comments to/ enable search(across ns ?, how many results)
+
+//in namespace options allow custom variables (Str:Str) like site moto and so on
+//then they will be fed to template(mustache) and can be used in there.
+
+//builtin addThis support
+//also twitter / facebook like stuff
+
+//builtin Google analytics
+
+Table of content / nav
+
+== Prio 2===
+
+submit comments
 
 google sitemap support (important)
+
+=== Prio 3+ ===
+
+keep copies of old pages - keep for x days ?
+
+Have cache cleaner thread (remove items unused in last xx hours - setting)
 
 encode email /mailto (fantom side for both .txt, .md etc...)
 
@@ -23,6 +42,8 @@ code highlighting usinfg fantom syntax pod
 
 new page -> check name is not admin, files, pod, etc ...
 
+user(s), login, password etc ...
+
 online editor / ACE
 online image upload
 
@@ -31,5 +52,8 @@ page edit locking ?
 admin page(s)
 
 
-
+message queue like kestrel - not distributed though
+indexer like lucene
+generic fantom caching lib ?
+cron like library - jot scheduler
 

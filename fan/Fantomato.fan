@@ -13,6 +13,7 @@ const class Fantomato : DraftMod
 {
   static const Log log := Fantomato#.pod.log
   static const GlobalSettings settings := GlobalSettings.load
+  static const Cache cache := Cache()
 
   ** Constructor.
   new make()
@@ -54,7 +55,7 @@ const class Fantomato : DraftMod
     uri := `tpl/$ns/$path`
     // If a file is not present in a custom namepace template, get it from default template
     // This allow overriding only a few files in custm templates
-    if( ! (settings.root + uri).exists)
+    if( ! (GlobalSettings.root + uri).exists)
       uri = `tpl/default/$path`
     serveFile(uri)
   }
@@ -62,11 +63,11 @@ const class Fantomato : DraftMod
   ** Serve files from data folder
   Void serveFile(Uri path)
   {
-    file := settings.root + path
+    file := GlobalSettings.root + path
 
     // Safety check
     // could use normalize too but then symlink break ... alow or not ?
-    if(file.pathStr.startsWith(settings.root.pathStr))
+    if(file.pathStr.startsWith(GlobalSettings.root.pathStr))
     {
       FileWeblet(file).onGet
     }

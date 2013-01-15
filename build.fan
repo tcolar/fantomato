@@ -10,7 +10,7 @@ class Build : BuildPod
   {
     podName = "fantomato"
     summary = "Fantomato - Blog / Wiki engine. (Dokuwiki & Markdown)"
-    depends = ["sys 1.0+", "draft 1.0+", "web 1.0+", "webmod 1.0+",
+    depends = ["sys 1.0+", "draft 1.0.1+", "web 1.0+", "webmod 1.0+",
                 "concurrent 1.0+", "markdown 1.0+", "netColarUtils 1.0+",
                 "mustache 1.0+"]
     srcDirs = [`fan/`]

@@ -31,3 +31,13 @@ or ther CSS files
 .pre{overflow-x: auto;overflow-y: auto; margin: 1px; padding: 1px}
 pre{margin-top:1px;padding-top:1px;padding-bottom:1px;margin-bottom:1px}
 
+.addthis_toolbox.addthis_pill_combo a {
+    float: left; border-bottom:0px;
+}
+.addthis_toolbox.addthis_pill_combo a.addthis_button_tweet {
+    margin-top: -2px;
+}
+.addthis_button_compact .at15t_compact {
+    margin-right: 4px;
+    float: left;
+}
