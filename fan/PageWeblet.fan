@@ -34,6 +34,9 @@ class PageWeblet : Weblet
     nsSettings := NsSettings.loadFor(ns)
     pageOpts := PageSettings.loadFor(ns, page)
 
+    req.session["fantomato.ns"] = ns
+    req.session["fantomato.tpl"] = nsSettings.template
+
     content := read(ns, page)
 
     if(content == null)
@@ -93,22 +96,27 @@ class PageWeblet : Weblet
     pageOpts.variables.each |v, k| {args[k] = v}
 
     // comments
-    // TODO : move to method
     nbComments := nsSettings.commentsPerPage
     if(nbComments > 0 && pageOpts.commentsEnabled)
     {
-      folder := GlobalSettings.root + `$ns/pages/${pageName}/comments/`
-      // file name are timestamps, so ordering from higher(newer) to lower(older)
-      // TODO: check folder exists
-      files := folder.listFiles.sort |a, b -> Int| { -(a.name <=> b.name)}
-      if(files.size > nbComments)
-        files = files[0 ..< nbComments]
-      comments := PageComment[,]
-      files.each
+      fc := GlobalSettings.root + `$ns/comments//${pageName}.json`
+      if(fc.exists)
       {
-        // TODO read it
+        comments := (PageComment[]?) Cache.readCachedFile(fc, "comments")?.content
+        if(comments != null)
+        {
+          max := comments.size
+          if(!req.uri.query.containsKey("allComments") && max > nbComments)
+            max = nbComments
+          args["comments"] = comments[0 ..< max]
+          args["hasComments"] = true
+          if(comments.size - max > 0)
+          {
+            args["moreComments"] = true
+            args["commentsLeft"] = comments.size - max
+          }
+        }
       }
-      args["comments"] = comments
     }
 
     tpl = Mustache(tpl.in).render(args)

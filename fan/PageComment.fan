@@ -7,25 +7,20 @@
 ** Will be saved in JSON format (filename is timestamp)
 **
 @Serializable
-class PageComment
+const class PageComment
 {
-  Str author
+  const Str author
 
-  Str title
+  const Str title
 
-  Str text
+  const Str text
 
-  new make(Str author, Str title, Str text)
+  const DateTime ts
+
+  new make(|This|? f) {if(f!=null) f(this)}
+
+  Str date()
   {
-    this.author = author
-    this.title = title
-    this.text = text
+    return ts.toTimeZone(TimeZone.cur).toLocale("DD MMM YYYY h:m zzz")
   }
-
-  /*Void save(Str namespace, Str pageName)
-  {
-    // TODO
-  }*/
-
-  //File f := GlobalSettings.root + `$ns/pages/${page}/comments/*`
 }

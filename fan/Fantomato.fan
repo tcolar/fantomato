@@ -22,6 +22,12 @@ const class Fantomato : DraftMod
     logDir = `./log/`.toFile
     router = Router {
       routes = [
+        Route("/favicon.ico", "GET", #serveFileItem),
+        Route("/{namespace}/favicon.ico", "GET", #serveFileItem),
+        Route("/robots.txt", "GET", #serveFileItem),
+        Route("/{namespace}/robots.txt", "GET", #serveFileItem),
+        Route("/sitemap.xml", "GET", #serveFileItem),
+        Route("/{namespace}/sitemap.xml", "GET", #serveFileItem),
         // "index" root to "home"
         Route("/", "GET", PageWeblet#page),
         // file items
@@ -40,7 +46,7 @@ const class Fantomato : DraftMod
 
   Void serveFileItem(Str:Str args)
   {
-    ns := args["namespace"] ?: "default"
+    ns := (args["namespace"] ?: req.session["fantomato.ns"]) ?: "default"
     i := args.containsKey("namespace") ? 2 : 1
     path := req.uri.path[i .. -1].join("/")
     uri := `$ns/files/$path`
@@ -49,10 +55,10 @@ const class Fantomato : DraftMod
 
   Void serveTplItem(Str:Str args)
   {
-    ns := args["namespace"] ?: "default"
+    tpl := req.session["fantomato.tpl"] ?: "default"
     i := args.containsKey("namespace") ? 2 : 1
     path := req.uri.path[i .. -1].join("/")
-    uri := `tpl/$ns/$path`
+    uri := `tpl/$tpl/$path`
     // If a file is not present in a custom namepace template, get it from default template
     // This allow overriding only a few files in custm templates
     if( ! (GlobalSettings.root + uri).exists)

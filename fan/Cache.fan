@@ -16,15 +16,19 @@ const class Cache : Actor
   override Obj? receive(Obj? msg)
   {
     list := msg as List
-    if(list[0] == "readCachedFile")
+    action := list[0]
+
+    if(action == "readCachedFile")
     {
       name := list[2]
       if(name == "read")
-        return _readCachedFile(list[1], readProcess, list[3])
+        return _readCachedFile(list[1], readProcess, [,])
       else if(name == "json")
         return _readCachedFile(list[1], jsonProcess, list[3])
       else if(name == "parse")
         return _readCachedFile(list[1], parseProcess, list[3])
+      else if(name == "comments")
+        return _readCachedFile(list[1], readComments, [,])
 
       throw Err("Unexpected process name: ${name}")
     }
@@ -87,5 +91,20 @@ const class Cache : Actor
       content = WikiProcessor().process(content)
     }
     return content
+  }
+
+  private static const |File, Str[] -> CachedContent?| readComments :=
+  |File f, Str[] params -> Obj| {
+    in := f.in
+    PageComment[] comments := [,]
+    try
+    {
+      while(true)
+        comments.add(JsonUtils.load(in, PageComment#, false))
+    }
+    catch(ParseErr e){}
+    finally
+      in.close
+    return comments
   }
 }
