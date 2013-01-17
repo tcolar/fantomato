@@ -1,7 +1,7 @@
 
 === Prio 1: ===
 
-Show comments
+// Show comments
 
 //global options:  addthis, build sitemap, enable search, clear logs etc ...
 //page options ? (comments on/off, template, author name, nb comment, extra meta)
@@ -16,27 +16,39 @@ Show comments
 
 //builtin Google analytics
 
-Table of content / nav
+//Templates for status302 then colar/jotwiki/fanide etc..
 
+//Check TODO's
+
+[Release 1]
 == Prio 2===
 
 submit comments
 
 google sitemap support (important)
 
+[Release 2]
+
 === Prio 3+ ===
+Have cache options and cleaner thread (remove items unused in last xx hours - setting)
+Option to turn off caching / limit size ?
+compress (zip?) cache content (io VS cpu trade-off)
+
+Table of content / nav
+
+send emails or tweets when new comments
+
+cleanup colar.net template, especially ugly old school css
 
 keep copies of old pages - keep for x days ?
 
-Have cache cleaner thread (remove items unused in last xx hours - setting)
+Reimplement dockuwikiparser in fantom to replace old java impl.
 
 encode email /mailto (fantom side for both .txt, .md etc...)
 
 new search engine support -> build one ?
 
 RSS/atom feed support
-
-send emails or tweets when new comments
 
 code highlighting usinfg fantom syntax pod
 
@@ -51,8 +63,8 @@ page edit locking ?
 
 admin page(s)
 
-
-message queue like kestrel - not distributed though
+job/scheduling lib
+message queue like kestrel - probably not distributed though
 indexer like lucene
 generic fantom caching lib ?
 cron like library - jot scheduler

@@ -51,7 +51,7 @@ class PageWeblet : Weblet
     }
 
     // ok send the page
-    Fantomato.log.info("Sending $page")
+    Fantomato.log.info("Sending $ns :: $page")
     res.headers["Content-Type"] = "text/html"
     res.statusCode = 200
 
@@ -96,6 +96,7 @@ class PageWeblet : Weblet
     pageOpts.variables.each |v, k| {args[k] = v}
 
     // comments
+    // TODO: maybe provide options to control comments caching as it could get rather large
     nbComments := nsSettings.commentsPerPage
     if(nbComments > 0 && pageOpts.commentsEnabled)
     {

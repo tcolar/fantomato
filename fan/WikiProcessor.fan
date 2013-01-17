@@ -4,7 +4,7 @@
 
 **
 ** WikiProcessor
-** Delefgate to my OLD java impl for now until a rewrite in Fantom
+** Delegate to my OLD java impl for now until a rewrite in Fantom
 **
 class WikiProcessor
 {
