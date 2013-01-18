@@ -100,6 +100,7 @@ class PageWeblet : Weblet
     nbComments := nsSettings.commentsPerPage
     if(nbComments > 0 && pageOpts.commentsEnabled)
     {
+      args["commentsEnabled"] = true
       fc := GlobalSettings.root + `$ns/comments//${pageName}.json`
       if(fc.exists)
       {
@@ -110,7 +111,6 @@ class PageWeblet : Weblet
           if(!req.uri.query.containsKey("allComments") && max > nbComments)
             max = nbComments
           args["comments"] = comments[0 ..< max]
-          args["hasComments"] = true
           if(comments.size - max > 0)
           {
             args["moreComments"] = true

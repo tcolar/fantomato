@@ -10,7 +10,7 @@
 # Short-Description: fantomato
 ### END INIT INFO
 
-NAME="fantorepo"
+NAME="fantomato"
 USER="fantom" # User we will run fantom as
 FANTOM_HOME="/home/fantom/fan"
 FAN_ARGS="draft -port 9100 -prod fantomato"

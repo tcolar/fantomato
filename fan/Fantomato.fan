@@ -22,12 +22,12 @@ const class Fantomato : DraftMod
     logDir = `./log/`.toFile
     router = Router {
       routes = [
-        Route("/favicon.ico", "GET", #serveFileItem),
-        Route("/{namespace}/favicon.ico", "GET", #serveFileItem),
-        Route("/robots.txt", "GET", #serveFileItem),
-        Route("/{namespace}/robots.txt", "GET", #serveFileItem),
-        Route("/sitemap.xml", "GET", #serveFileItem),
-        Route("/{namespace}/sitemap.xml", "GET", #serveFileItem),
+        Route("/favicon.ico", "GET", #serveRootFile),
+        Route("/{namespace}/favicon.ico", "GET", #serveRootFile),
+        Route("/robots.txt", "GET", #serveRootFile),
+        Route("/{namespace}/robots.txt", "GET", #serveRootFile),
+        Route("/sitemap.xml", "GET", #serveRootFile),
+        Route("/{namespace}/sitemap.xml", "GET", #serveRootFile),
         // "index" root to "home"
         Route("/", "GET", PageWeblet#page),
         // file items
@@ -53,6 +53,15 @@ const class Fantomato : DraftMod
     serveFile(uri)
   }
 
+  Void serveRootFile(Str:Str args)
+  {
+    ns := (args["namespace"] ?: req.session["fantomato.ns"]) ?: "default"
+    i := args.containsKey("namespace") ? 1 : 0
+    path := req.uri.path[i .. -1].join("/")
+    uri := `$ns/files/$path`
+    serveFile(uri)
+  }
+
   Void serveTplItem(Str:Str args)
   {
     tpl := req.session["fantomato.tpl"] ?: "default"
@@ -73,10 +82,25 @@ const class Fantomato : DraftMod
 
     // Safety check
     // could use normalize too but then symlink break ... alow or not ?
-    if(file.pathStr.startsWith(GlobalSettings.root.pathStr))
+    if( ! file.pathStr.startsWith(GlobalSettings.root.pathStr))
     {
-      FileWeblet(file).onGet
+      file404; return
     }
+
+    if(! file.exists)
+    {
+      file404; return
+    }
+echo("file: $file")
+    FileWeblet(file).onGet
+  }
+
+  Void file404()
+  {
+    res.headers["Content-Type"] = "text/html"
+    res.statusCode = 404
+    res.out.close
+    return
   }
 }
 
