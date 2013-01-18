@@ -26,9 +26,16 @@ class NsSettings
                     "Empty String to disable."]}
   Str addThisId := ""
 
-  @Setting{help= ["Whether to create a table of contents for each page",
+  @Setting{ help = ["Typically a namspace files are placed in the /files/ folder",
+                    "Howhever at times it's necessary to expose a file at the site/namespace root",
+                    "For example the favicon.ico file or say a Google site verification file.",
+                    "Files listed here will be automatically exposed under the root",
+                    "For example '/robots.txt' would return /files/robots.txt for that namespace"]}
+  Str[] rootFiles := ["robots.txt", "sitemap.xml", "sitemap.xml.gz", "favicon.ico"]
+
+  /*@Setting{help= ["Whether to create a table of contents for each page",
                   "Disable if you don't need / want to show a TOC."]}
-  Bool enableToc := false
+  Bool enableToc := false*/
 
   // TODO: Will need to set smtp server in global conf first ?
   //@Setting{ help = ["Email address to send comments to."]}

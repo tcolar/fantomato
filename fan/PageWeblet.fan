@@ -37,12 +37,19 @@ class PageWeblet : Weblet
     req.session["fantomato.ns"] = ns
     req.session["fantomato.tpl"] = nsSettings.template
 
+    // check for rootFile requests and short-circuit if matches
+    if(nsSettings.rootFiles.contains(page))
+    {
+      path := GlobalSettings.root.uri + `$ns/files/$page`
+      Fantomato.serveFile(path, res)
+      return
+    }
+
     content := read(ns, page)
 
+    // process a page
     if(content == null)
     {
-      if(page.lower != "favicon.ico"  && page.lower != "robots.txt")
-        Fantomato.log.info("Not found : $ns:$page")
       res.headers["Content-Type"] = "text/html"
       res.statusCode = 404
       notFound := read(ns, "404") ?: "<b>Error 404 -> Page not found : $page</b>"

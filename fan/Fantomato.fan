@@ -22,13 +22,7 @@ const class Fantomato : DraftMod
     logDir = `./log/`.toFile
     router = Router {
       routes = [
-        Route("/favicon.ico", "GET", #serveRootFile),
-        Route("/{namespace}/favicon.ico", "GET", #serveRootFile),
-        Route("/robots.txt", "GET", #serveRootFile),
-        Route("/{namespace}/robots.txt", "GET", #serveRootFile),
-        Route("/sitemap.xml", "GET", #serveRootFile),
-        Route("/{namespace}/sitemap.xml", "GET", #serveRootFile),
-        // "index" root to "home"
+        // "index" routes to "home"
         Route("/", "GET", PageWeblet#page),
         // file items
         Route("/files/*", "GET", #serveFileItem),
@@ -36,9 +30,9 @@ const class Fantomato : DraftMod
         // template items
         Route("/tpl/*", "GET", #serveTplItem),
         Route("/{namespace}/tpl/*", "GET", #serveTplItem),
-        // page in default namespace
+        // page items
+        // note that it will also map root files request such as /robots.txt
         Route("/{page}", "GET", PageWeblet#page),
-        // page in named namespace
         Route("/{namespace}/{page}", "GET", PageWeblet#page),
       ]
     }
@@ -50,7 +44,7 @@ const class Fantomato : DraftMod
     i := args.containsKey("namespace") ? 2 : 1
     path := req.uri.path[i .. -1].join("/")
     uri := `$ns/files/$path`
-    serveFile(uri)
+    serveFile(uri, res)
   }
 
   Void serveRootFile(Str:Str args)
@@ -59,7 +53,7 @@ const class Fantomato : DraftMod
     i := args.containsKey("namespace") ? 1 : 0
     path := req.uri.path[i .. -1].join("/")
     uri := `$ns/files/$path`
-    serveFile(uri)
+    serveFile(uri, res)
   }
 
   Void serveTplItem(Str:Str args)
@@ -72,11 +66,11 @@ const class Fantomato : DraftMod
     // This allow overriding only a few files in custm templates
     if( ! (GlobalSettings.root + uri).exists)
       uri = `tpl/default/$path`
-    serveFile(uri)
+    serveFile(uri, res)
   }
 
   ** Serve files from data folder
-  Void serveFile(Uri path)
+  static Void serveFile(Uri path, WebRes res)
   {
     file := GlobalSettings.root + path
 
@@ -84,18 +78,17 @@ const class Fantomato : DraftMod
     // could use normalize too but then symlink break ... alow or not ?
     if( ! file.pathStr.startsWith(GlobalSettings.root.pathStr))
     {
-      file404; return
+      file404(res); return
     }
 
     if(! file.exists)
     {
-      file404; return
+      file404(res); return
     }
-echo("file: $file")
     FileWeblet(file).onGet
   }
 
-  Void file404()
+  static Void file404(WebRes res)
   {
     res.headers["Content-Type"] = "text/html"
     res.statusCode = 404
