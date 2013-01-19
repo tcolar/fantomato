@@ -14,6 +14,7 @@ const class Fantomato : DraftMod
   static const Log log := Fantomato#.pod.log
   static const GlobalSettings settings := GlobalSettings.load
   static const Cache cache := Cache()
+  static const SitemapGen sitemap := SitemapGen()
 
   ** Constructor.
   new make()
@@ -36,6 +37,8 @@ const class Fantomato : DraftMod
         Route("/{namespace}/{page}", "GET", PageWeblet#page),
       ]
     }
+
+    sitemap.send("run")
   }
 
   Void serveFileItem(Str:Str args)

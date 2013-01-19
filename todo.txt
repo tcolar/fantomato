@@ -25,7 +25,7 @@
 
 submit comments
 
-google sitemap support (important)
+google sitemap support (important) ~ would need scheduling at some point
 
 [Release 2]
 
@@ -63,9 +63,10 @@ page edit locking ?
 
 admin page(s)
 
-job/scheduling lib
+-- Projects ---
+
+cron like library - jot scheduler
 message queue like kestrel - probably not distributed though
 indexer like lucene
 generic fantom caching lib ?
-cron like library - jot scheduler
 

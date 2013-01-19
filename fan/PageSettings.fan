@@ -15,7 +15,7 @@ class PageSettings
   Bool commentsEnabled := true
 
   @Setting{help = ["What template page to use to render that page",
-                   "This way you could have a sepcial template say for blog pages VS wiki pages etc ..."]}
+                   "This way you could have a special template say for blog pages VS wiki pages etc ..."]}
   Str page := "page.html"
 
   @Setting{help=[" Who last edited the page"]} Str author := "admin"

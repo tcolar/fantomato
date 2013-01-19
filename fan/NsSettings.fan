@@ -9,6 +9,11 @@ using netColarUtils
 @Serializable
 class NsSettings
 {
+  @Setting{ help = ["The public url for this namespace root.",
+                    "ie: http://www.mysite.com/ or http://www.mysite.com/ns1/",
+                    "Required to be set correctly for Google sitemap generation."]}
+  Str publicUri := ""
+
   @Setting{ help = ["Name of the template(folder) to use for this namespace."]}
   Str template := "default"
 
