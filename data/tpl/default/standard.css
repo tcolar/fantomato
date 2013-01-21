@@ -1,7 +1,7 @@
 /*
 Standard stylesheet for wiki items
-You should probably leave this aone and override what you want in template.css
-or ther CSS files
+You should probably leave this alone and override what you want in template.css
+or your own extra CSS files
 */
 
 .fixme{border:2px solid orange ;background-color:transparent;

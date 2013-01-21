@@ -1,72 +1,46 @@
 
-=== Prio 1: ===
+=== Prio 2+ ===
 
-// Show comments
+- Allow users to submit comments with temporary captcha ?
 
-//global options:  addthis, build sitemap, enable search, clear logs etc ...
-//page options ? (comments on/off, template, author name, nb comment, extra meta)
-//namespace options -> template, Google analytics / enable comments / comments per page /
-//  ... use capctha / email comments to/ enable search(across ns ?, how many results)
-
-//in namespace options allow custom variables (Str:Str) like site moto and so on
-//then they will be fed to template(mustache) and can be used in there.
-
-//builtin addThis support
-//also twitter / facebook like stuff
-
-//builtin Google analytics
-
-//Templates for status302 then colar/jotwiki/fanide etc..
-
-//Check TODO's
-
-[Release 1]
-== Prio 2===
-
-submit comments
-
-google sitemap support (important) ~ would need scheduling at some point
-
-[Release 2]
+- Set proper meta cache / headers : last change ?
 
 === Prio 3+ ===
+
+Rimplement full captcha with image
+
 Have cache options and cleaner thread (remove items unused in last xx hours - setting)
 Option to turn off caching / limit size ?
 compress (zip?) cache content (io VS cpu trade-off)
 
-Table of content / nav
-
-send emails or tweets when new comments
-
-cleanup colar.net template, especially ugly old school css
-
-keep copies of old pages - keep for x days ?
-
-Reimplement dockuwikiparser in fantom to replace old java impl.
-
-encode email /mailto (fantom side for both .txt, .md etc...)
-
-new search engine support -> build one ?
+new built in search engine -> build one / reuse javaontracks impl. ?
 
 RSS/atom feed support
 
-code highlighting usinfg fantom syntax pod
+Code blocks highlighting using fantom syntax pod
+
+Auto create Table of content / nav to be used in templates
+
+Option to send emails when new comments are posted
+
+Reimplement dockuwiki syntax parser in fantom to replace old java impl.
+
+encode email /mailto (fantom side for both .txt, .md etc...)
+
+=== Prio 4 : users /admin features ===
+
+users, permissions, login, passwords ...
 
 new page -> check name is not admin, files, pod, etc ...
 
 user(s), login, password etc ...
 
 online editor / ACE
+
 online image upload
 
 page edit locking ?
 
-admin page(s)
+admin / config page(s)
 
--- Projects ---
-
-cron like library - jot scheduler
-message queue like kestrel - probably not distributed though
-indexer like lucene
-generic fantom caching lib ?
 
