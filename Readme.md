@@ -4,7 +4,7 @@ Fantomato is a Wiki / blog engine written in Fantom.
 This is a port / rewrite of my old java engine called [JotWiki](http://www.jotwiki.net/).
 It does not have yet all the features jotwiki had, however it has better performance.
 
-At this point I still have a long [TODO](todo.txt) list however it is already usable and i use.
+At this point I still have a long [TODO](https://bitbucket.org/tcolar/fantomato/raw/tip/todo.txt) list however it is already usable and in use.
 For example I use it [here](http://www.status302.com/) and [here](http://wiki.colar.net/)
 
 While it currently lacks an "in place editor" to edit a page online, it is implemented in such
@@ -70,7 +70,7 @@ If you enable comments, then users maybe submit them. At this time they are plai
 
 - **And more ...**
 
-There are many more thing I'm planning to do when I have time, see [todo.txt](todo.txt).
+There are many more thing I'm planning to do when I have time, see [todo.txt](https://bitbucket.org/tcolar/fantomato/raw/tip/todo.txt).
 
 ### Installation
 
@@ -126,10 +126,10 @@ This will run fantomato on port 8080, go have a look.
 
 - Init script and proxy config:
 
-You might want to setup a proper init.d script, [here is one](fantomato.sh).
+You might want to setup a proper init.d script, [here is one](https://bitbucket.org/tcolar/fantomato/raw/tip/fantomato.sh).
 
 You will probably want to run this behind a proxy.
-Here are [Nginx](doc/nginx-site-example.conf) and Apache(doc/apache-site-example.conf) examples.
+Here are [Nginx](https://bitbucket.org/tcolar/fantomato/raw/tip/doc/nginx-site-example.conf) and [Apache](https://bitbucket.org/tcolar/fantomato/raw/tip/doc/apache-site-example.conf) examples.
 
 ### Usage
 You can have a look under /data/fantomato/default/ to see the data of the default/example namespace.
