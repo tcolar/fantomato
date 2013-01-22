@@ -116,13 +116,6 @@ class PageWeblet : Weblet
     return tpl
   }
 
-  ** lambda to import a template piece
-  Func tplLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
-  {
-    ns := getNs
-    return read(ns, var.trim) ?: ""
-  }
-
   ** lambda to import page bits in a template
   Func importLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
   {

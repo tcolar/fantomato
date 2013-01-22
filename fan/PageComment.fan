@@ -25,8 +25,8 @@ const class PageComment
   }
 }
 
-** Will be send to frontend via ajax in json format
-** Gives a list / subest of comments with pagination data
+** Will be sent to frontend via ajax in json format
+** Gives a list / subeset of comments with pagination data
 @Serializable
 const class PageCommentList
 {
