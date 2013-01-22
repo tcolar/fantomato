@@ -5,6 +5,7 @@
 using draft
 using web
 using webmod
+using captcha302
 
 **
 ** Server entry point
@@ -23,6 +24,7 @@ const class Fantomato : DraftMod
     logDir = `./log/`.toFile
     router = Router {
       routes = [
+        //Route("/captcha", "GET", #captcha),
         // "index" routes to "home"
         Route("/", "GET", PageWeblet#page),
         // file items
@@ -40,6 +42,14 @@ const class Fantomato : DraftMod
 
     sitemap.send("run")
   }
+
+  /*Void captcha()
+  {
+    CaptchaGenerator g := CaptchaGenerator(CaptchaImpl{})
+    code := g.toBrowser(req, res)
+
+    echo("ok? "+g.validate(req, code.val))
+  }*/
 
   Void serveFileItem(Str:Str args)
   {
