@@ -24,3 +24,18 @@ const class PageComment
     return ts.toTimeZone(TimeZone.cur).toLocale("DD MMM YYYY h:m zzz")
   }
 }
+
+** Will be send to frontend via ajax in json format
+** Gives a list / subest of comments with pagination data
+@Serializable
+const class PageCommentList
+{
+  ** total number of comments for this page
+  const Int total
+  ** Index of the first comment given in comments (relative to total)
+  const Int first
+  ** The (sub)lits of comments
+  const PageComment[] comments
+
+  new make(|This|? f) {if(f!=null) f(this)}
+}

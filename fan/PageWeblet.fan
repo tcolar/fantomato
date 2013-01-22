@@ -34,9 +34,6 @@ class PageWeblet : Weblet
     nsSettings := NsSettings.loadFor(ns)
     pageOpts := PageSettings.loadFor(ns, page)
 
-    req.session["fantomato.ns"] = ns
-    req.session["fantomato.tpl"] = nsSettings.template
-
     // check for rootFile requests and short-circuit if matches
     if(nsSettings.rootFiles.contains(page))
     {
@@ -44,6 +41,10 @@ class PageWeblet : Weblet
       Fantomato.serveFile(path, res)
       return
     }
+
+    req.session["fantomato.ns"] = ns
+    req.session["fantomato.tpl"] = nsSettings.template
+    req.session["fantomato.page"] = page
 
     content := read(ns, page)
 
@@ -98,34 +99,16 @@ class PageWeblet : Weblet
     if( ! nsSettings.addThisId.isEmpty)
       args["addThisEnabled"] = true
 
-    // user defined vars
-    nsSettings.variables.each |v, k| {args[k] = v}
-    pageOpts.variables.each |v, k| {args[k] = v}
-
     // comments
-    // TODO: maybe provide options to control comments caching as it could get rather large
     nbComments := nsSettings.commentsPerPage
     if(nbComments > 0 && pageOpts.commentsEnabled)
     {
       args["commentsEnabled"] = true
-      fc := GlobalSettings.root + `$ns/comments//${pageName}.json`
-      if(fc.exists)
-      {
-        comments := (PageComment[]?) Cache.readCachedFile(fc, "comments")?.content
-        if(comments != null)
-        {
-          max := comments.size
-          if(!req.uri.query.containsKey("allComments") && max > nbComments)
-            max = nbComments
-          args["comments"] = comments[0 ..< max]
-          if(comments.size - max > 0)
-          {
-            args["moreComments"] = true
-            args["commentsLeft"] = comments.size - max
-          }
-        }
-      }
     }
+
+    // user defined vars
+    nsSettings.variables.each |v, k| {args[k] = v}
+    pageOpts.variables.each |v, k| {args[k] = v}
 
     tpl = Mustache(tpl.in).render(args)
         + "\n\n<!--Powered By FantoMato http://www.status302.com/fantomato/-->\n"
@@ -133,6 +116,12 @@ class PageWeblet : Weblet
     return tpl
   }
 
+  ** lambda to import a template piece
+  Func tplLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
+  {
+    ns := getNs
+    return read(ns, var.trim) ?: ""
+  }
 
   ** lambda to import page bits in a template
   Func importLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
