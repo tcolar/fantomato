@@ -21,7 +21,7 @@ Sometimes pages are simple and sometimes they are not, so you may pick an apropr
 * If the page is a `.txt` it will be rendered in the [Jotwiki](http://www.colar.net/syntax.html).
 That format is my own but VERY similar to the [DokuWiki creole](https://www.dokuwiki.org/wiki:syntax).
 It is a bit more intuitive and more flexible than markdown and allows html embedding, good for more complex pages.
-* If the page is a `.html`, it will be rendered "as-is", used for complex pages when you need full freedom.
+* If the page is a `.html`, it will be rendered "as-is", used for complex pages when you need full freedom. <br/>
 
 - **Entirely File system based**:
 
@@ -76,41 +76,51 @@ There are many more thing I'm planning to do when I have time, see [todo.txt](ht
 
 - You will need java6+ installed:
 
-  apt-get install oracle-java7-installer
+`apt-get install oracle-java7-installer`
 
 - Create the wiki content root (I recommend creating a non root user, say 'fantomato'):
 
-  sudo useradd fantomato
-  sudo mkdir /data/fantomato/
-  sudo chown fantomato /data/fantomato/
+`sudo useradd fantomato`
+
+`sudo mkdir /data/fantomato/`
+
+`sudo chown fantomato /data/fantomato/`
 
 - Copy the default data and example into it
 
-  su - fantomato
-  cd /data/fantomato/
-  wget "https://bitbucket.org/tcolar/fantomato/raw/tip/data.tgz"
-  tar -xvf data.tgz
+`su - fantomato`
+
+`cd /data/fantomato/`
+
+`wget "https://bitbucket.org/tcolar/fantomato/raw/tip/data.tgz"`
+
+`tar -xvf data.tgz`
 
 - You will need Fantom installed, download fantom [here](http://fantom.org/):
 
-  cd ~
-  unzip famtom-1.0.64.zip
-  mv famtom-1.0.64 fantom
-  sh ~/fantom/adm/unixsetup
-  export PATH=$PATH:~/fantom/bin/
+`cd ~`
+
+`unzip famtom-1.0.64.zip`
+
+`mv famtom-1.0.64 fantom`
+
+`sh ~/fantom/adm/unixsetup`
+
+`export PATH=$PATH:~/fantom/bin/`
 
 - Configure the repo root in the fantom config:
 
-  mkdir ~/fantom/etc/fantomato
-  echo "dataRoot=/data/fantomato/" > ~/fantom/etc/fantomato.props
+` mkdir ~/fantom/etc/fantomato`
+
+`echo "dataRoot=/data/fantomato/" > ~/fantom/etc/fantomato.props`
 
 - Use fanr to install Fantomato:
 
-  fanr install -r http://repo.status302.com/fanr/ fantomato
+`fanr install -r http://repo.status302.com/fanr/ fantomato`
 
 - You may now try Fantomato manually using:
 
-  fan draft fantomato
+`fan draft fantomato`
 
 This will run fantomato on port 8080, go have a look.
 
