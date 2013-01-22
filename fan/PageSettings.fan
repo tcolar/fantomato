@@ -28,8 +28,10 @@ class PageSettings
 
   static PageSettings loadFor(Str ns, Str page)
   {
+    commentsOn := NsSettings.loadFor(ns).commentsEnabled
+
     File f := GlobalSettings.root + `$ns/pages/conf/${page}.conf`
     cached := Cache.readCachedFile(f, "json", [PageSettings#.qname])
-    return (PageSettings) (cached?.content ?: PageSettings{})
+    return (PageSettings) (cached?.content ?: PageSettings{commentsEnabled = commentsOn})
   }
 }

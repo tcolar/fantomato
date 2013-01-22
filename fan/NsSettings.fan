@@ -20,8 +20,11 @@ class NsSettings
   @Setting{ help = ["Google analytics ID. (Empty string for none)"]}
   Str googleAnalyticsId := ""
 
-  @Setting{ help = ["How many comments to show. (0 for disabling comments)"]}
+  @Setting{ help = ["How many comments per page to show."]}
   Int commentsPerPage := 20
+
+  @Setting{ help = ["Whether comments are enabled by default for this namespace(can override in page settings)"]}
+  Bool commentsEnabled := true
 
   @Setting{ help = ["Variables that will be passed to the templates",
                     "For example the namespace tagline."]}

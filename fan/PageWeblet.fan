@@ -54,7 +54,7 @@ class PageWeblet : Weblet
       res.headers["Content-Type"] = "text/html"
       res.statusCode = 404
       notFound := read(ns, "404") ?: "<b>Error 404 -> Page not found : $page</b>"
-      res.out.print(templatize(ns, notFound, page, nsSettings, pageOpts)).close
+      res.out.print(templatize(ns, notFound, "404", nsSettings, pageOpts)).close
       return
     }
 
@@ -100,8 +100,7 @@ class PageWeblet : Weblet
       args["addThisEnabled"] = true
 
     // comments
-    nbComments := nsSettings.commentsPerPage
-    if(nbComments > 0 && pageOpts.commentsEnabled)
+    if(pageName != "404" && pageOpts.commentsEnabled)
     {
       args["commentsEnabled"] = true
     }

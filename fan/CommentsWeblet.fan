@@ -12,13 +12,13 @@ using netColarUtils
 **
 class CommentsWeblet  : Weblet
 {
+  CaptchaGenerator gen := CaptchaGenerator(CaptchaImpl{})
+
   ** Send a captchca to the browser
   ** Used to validate comments are not spam (or try to anyway)
   Void captcha(Str:Str args)
   {
-    CaptchaGenerator g := CaptchaGenerator(CaptchaImpl{})
-    code := g.toBrowser(req, res)
-    // echo("ok? "+g.validate(req, code.val))
+    gen.toBrowser(req, res)
   }
 
   ** Will send the comments for the current page
@@ -41,7 +41,7 @@ class CommentsWeblet  : Weblet
     pageOpts := PageSettings.loadFor(ns, pageName)
 
     nbComments := nsSettings.commentsPerPage
-    fc := GlobalSettings.root + `$ns/comments//${pageName}.json`
+    fc := GlobalSettings.root + `$ns/comments/${pageName}.json`
     if(fc.exists)
     {
       // TODO: maybe provide options to control comments caching as it could get rather large
@@ -50,11 +50,12 @@ class CommentsWeblet  : Weblet
       {
         start := offset
         end := offset + nbComments
-        if(start >= comments.size) start = comments.size - 1
-        if(end >= comments.size) end = comments.size - 1
+        if(start > comments.size) start = comments.size
+        if(end > comments.size) end = comments.size
 
         items := PageCommentList
         {
+          it.pageSize = nbComments
           it.first = offset
           it.total = comments.size
           it.comments = comments[start ..< end]
@@ -66,11 +67,49 @@ class CommentsWeblet  : Weblet
     sendJson([,])
   }
 
+  ** Post a comment
+  Void addComment(Str:Str args)
+  {
+    ns := req.session["fantomato.ns"]
+    pageName := req.session["fantomato.page"]
+    if(ns == null || pageName == null)
+    {
+      sendJson("Session as timed out. Save your text and reload the page.", 500)
+      return
+    }
+    if( ! PageSettings.loadFor(ns, pageName).commentsEnabled)
+    {
+      sendJson("Comments are not allowed on this page.", 500)
+      return
+    }
+
+    form := req.form
+    if( ! gen.validate(req, form["captcha"] ?: ""))
+    {
+      sendJson("Captcha code does not match.", 401)
+      return
+    }
+
+    comment := PageComment
+    {
+      it.author = form["author"]
+      it.title = form["title"]
+      it.text = form["text"]
+      it.ts = DateTime.now
+    }
+
+    // Add the comment to file via an actor message to be safe
+    Fantomato.cache.send(["addComment", ns, pageName, comment])
+
+    sendJson("Success", 200)
+  }
+
+
   ** send the object to the browser in JSON format and commit the response
-  Void sendJson(Obj obj)
+  private Void sendJson(Obj obj, Int statusCode := 200)
   {
     res.headers["Content-Type"] = "application/json"
-    res.statusCode = 200
+    res.statusCode = statusCode
     out := res.out
     try
       JsonUtils.save(out, obj)

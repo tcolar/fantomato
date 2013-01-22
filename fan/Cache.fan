@@ -32,7 +32,27 @@ const class Cache : Actor
 
       throw Err("Unexpected process name: ${name}")
     }
+    else if(action == "addComment")
+      addComment(list[1], list[2], list[3])
     return null
+  }
+
+  ** Add a page comment
+  private Void addComment(Str ns, Str page, PageComment comment)
+  {
+    fc := GlobalSettings.root + `$ns/comments/${page}.json`
+    if( ! fc.exists)
+      fc.create
+    buf := fc.readAllBuf
+    out := fc.out
+    try
+    {
+      JsonUtils.save(out, comment, false)
+      out.printLine
+      out.writeBuf(buf)
+    }
+    finally
+      out.close
   }
 
   ** Read a file and lazy cache the content as needed

@@ -1,13 +1,7 @@
 
-=== Prio 2+ ===
-
-- Allow users to submit comments with temporary captcha ?
-
-- Set proper meta cache / headers : last change ?
-
 === Prio 3+ ===
 
-Rimplement full captcha with image
+Reimplement full captcha with image
 
 Have cache options and cleaner thread (remove items unused in last xx hours - setting)
 Option to turn off caching / limit size ?

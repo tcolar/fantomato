@@ -27,6 +27,8 @@ const class Fantomato : DraftMod
         Route("/{ns}/_/captcha", "GET", CommentsWeblet#captcha),
         Route("/_/comments", "GET", CommentsWeblet#comments),
         Route("/{ns}/_/comments", "GET", CommentsWeblet#comments),
+        Route("/_/commentAdd", "POST", CommentsWeblet#addComment),
+        Route("/{ns}/_/commentAdd", "POST", CommentsWeblet#addComment),
         // "index" routes to "home"
         Route("/", "GET", PageWeblet#page),
         // file items

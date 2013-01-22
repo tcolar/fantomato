@@ -68,6 +68,8 @@ Google sitemaps really help with proper indexing. so fantomato autocreates them 
 
 If you enable comments, then users maybe submit them. At this time they are plain text only. This might chage, but then again it can be seen as a security feature.
 
+The comments support pagination via Ajax and their is a Captcha required to post comments.
+
 - **And more ...**
 
 There are many more thing I'm planning to do when I have time, see [todo.txt](https://bitbucket.org/tcolar/fantomato/raw/tip/todo.txt).
