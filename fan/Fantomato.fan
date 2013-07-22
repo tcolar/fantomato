@@ -39,7 +39,7 @@ const class Fantomato : DraftMod
         Route("/{namespace}/files/*", "GET", #serveFileItem),
         // template items
         Route("/tpl/*", "GET", #serveTplItem),
-        //Route("/{namespace}/tpl/*", "GET", #serveTplItem),
+        Route("/{namespace}/tpl/*", "GET", #serveTplItem),
         // page items
         // note that it will also map root files request such as /robots.txt
         Route("/{page}", "GET", PageWeblet#page),

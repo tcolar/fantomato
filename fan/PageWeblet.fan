@@ -128,7 +128,7 @@ class PageWeblet : Weblet
     allTags.keys.sort.each |tag|
     {
       prefix := ns == "default" ? "" : "/$ns"
-      html += "<li><a href='$prefix/_tag/$tag'>"
+      html += "<li><a href='_tag/$tag'>"
             + (tags.contains(tag) ? "<b>" : "")
             + "$tag (${allTags[tag]})"
             + (tags.contains(tag) ? "</b>" : "")
