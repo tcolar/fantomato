@@ -172,15 +172,15 @@ public class JotWikiParser
 
         //smileys
         String context = "";
-        JOTPatternReplacer smileReplacer = new JOTPatternReplacer(":-\\)", "", "<img src='tpl/img/smileys/smile.gif' alt='smile'/>", "");
+        JOTPatternReplacer smileReplacer = new JOTPatternReplacer(":-\\)", "", "<img src='/tpl/img/smileys/smile.gif' alt='smile'/>", "");
         page = strip(parts, page, smileReplacer);
-        JOTPatternReplacer winkReplacer = new JOTPatternReplacer(";-\\)", "", "<img src='tpl/img/smileys/wink.gif' alt='wink'/>", "");
+        JOTPatternReplacer winkReplacer = new JOTPatternReplacer(";-\\)", "", "<img src='/tpl/img/smileys/wink.gif' alt='wink'/>", "");
         page = strip(parts, page, winkReplacer);
-        JOTPatternReplacer lolReplacer = new JOTPatternReplacer(":-D", "", "<img src='tpl/img/smileys/lol.gif' alt='LOL'/>", "");
+        JOTPatternReplacer lolReplacer = new JOTPatternReplacer(":-D", "", "<img src='/tpl/img/smileys/lol.gif' alt='LOL'/>", "");
         page = strip(parts, page, lolReplacer);
-        JOTPatternReplacer tongueReplacer = new JOTPatternReplacer(":-P", "", "<img src='tpl/img/smileys/tongue.gif' alt='tongueOut'/>", "");
+        JOTPatternReplacer tongueReplacer = new JOTPatternReplacer(":-P", "", "<img src='/tpl/img/smileys/tongue.gif' alt='tongueOut'/>", "");
         page = strip(parts, page, tongueReplacer);
-        JOTPatternReplacer frownReplacer = new JOTPatternReplacer(":-\\(", "", "<img src='tpl/img//tpl/img/smileys/frown.gif' alt='frown'/>", "");
+        JOTPatternReplacer frownReplacer = new JOTPatternReplacer(":-\\(", "", "<img src='/tpl/img/smileys/frown.gif' alt='frown'/>", "");
         page = strip(parts, page, frownReplacer);
 
         JOTPatternReplacer breaksReplacer = new JOTPatternReplacer("\\\\\\\\$", "", "", "");
@@ -239,7 +239,7 @@ public class JotWikiParser
             } else
             {
                 //other file attachment
-                replacement="<img src='tpl/img/file.gif'/>&nbsp;<a href='files/"+ m2.trim() +"'>"+m2.trim()+"</a>";
+                replacement="<img src='/tpl/img/file.gif'/>&nbsp;<a href='files/"+ m2.trim() +"'>"+m2.trim()+"</a>";
             }
 
             int index = parts.size();
@@ -292,15 +292,15 @@ public class JotWikiParser
                     link = "file:///" + link;
                 }
                 internal = false;
-                image = "tpl/img/link_icon.gif";
+                image = "/tpl/img/link_icon.gif";
                 if (link.startsWith("file://") || link.startsWith("\\\\"))
                 {
-                    image = "tpl/img/windows.gif";
+                    image = "/tpl/img/windows.gif";
                 }
             } else if (link.startsWith("mailto:"))
             {
                 internal = false;
-                image = "tpl/img/mail_icon.gif";
+                image = "/tpl/img/mail_icon.gif";
                 isMailTo=true;
             }
             if (image != null)
@@ -327,7 +327,7 @@ public class JotWikiParser
                 String nameSpace = "";
                 if (link.indexOf(":") != -1)
                 {
-                    replacement += "<img src='tpl/img/link_icon.gif'/>";
+                    replacement += "<img src='/tpl/img/link_icon.gif'/>";
                     nameSpace = link.substring(0, link.indexOf(":"));
                     link = link.substring(link.indexOf(":") + 1, link.length());
                     name = name.substring(name.indexOf(":") + 1, name.length());

@@ -15,6 +15,7 @@ const class Fantomato : DraftMod
   static const GlobalSettings settings := GlobalSettings.load
   static const Cache cache := Cache()
   static const SitemapGen sitemap := SitemapGen()
+  static const TagsActor tagger :=TagsActor()
 
   ** Constructor.
   new make()
@@ -29,6 +30,8 @@ const class Fantomato : DraftMod
         Route("/{ns}/_/comments", "GET", CommentsWeblet#comments),
         Route("/_/commentAdd", "POST", CommentsWeblet#addComment),
         Route("/{ns}/_/commentAdd", "POST", CommentsWeblet#addComment),
+        Route("/_/tag/{tag}", "GET", PageWeblet#tag),
+        Route("/{ns}/_tag/{tag}", "GET", PageWeblet#tag),
         // "index" routes to "home"
         Route("/", "GET", PageWeblet#page),
         // file items
@@ -36,7 +39,7 @@ const class Fantomato : DraftMod
         Route("/{namespace}/files/*", "GET", #serveFileItem),
         // template items
         Route("/tpl/*", "GET", #serveTplItem),
-        Route("/{namespace}/tpl/*", "GET", #serveTplItem),
+        //Route("/{namespace}/tpl/*", "GET", #serveTplItem),
         // page items
         // note that it will also map root files request such as /robots.txt
         Route("/{page}", "GET", PageWeblet#page),
@@ -44,6 +47,7 @@ const class Fantomato : DraftMod
       ]
     }
 
+    tagger.send("run")
     sitemap.send("run")
   }
 
@@ -73,6 +77,7 @@ const class Fantomato : DraftMod
     uri := `tpl/$tpl/$path`
     // If a file is not present in a custom namepace template, get it from default template
     // This allow overriding only a few files in custm templates
+    echo(GlobalSettings.root + uri)
     if( ! (GlobalSettings.root + uri).exists)
       uri = `tpl/default/$path`
     serveFile(uri, res)

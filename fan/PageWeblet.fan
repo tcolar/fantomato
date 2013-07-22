@@ -89,6 +89,7 @@ class PageWeblet : Weblet
               "content"        : content,
               "import"         : importLambda,
               "ap"             : activePathLambda,
+              "showtags"       : tagsLambda,
               "googleAnalytics": nsSettings.getGaCode,
                // in case somebody rather use custom GA js code
               "gaId"           : nsSettings.googleAnalyticsId,
@@ -113,6 +114,27 @@ class PageWeblet : Weblet
         + "\n\n<!--Powered By FantoMato http://www.status302.com/fantomato/-->\n"
 
     return tpl
+  }
+
+  ** lambda to show the lits of all known tags as a list (<li> tags)
+  ** Tags that are active on the current page get bolded
+  Func tagsLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
+  {
+    ns := getNs
+    page := req.uri.path.last ?: "home"
+    allTags := Fantomato.tagger.send("tags").get as Str:Int
+    html := ""
+    tags := PageSettings.loadFor(ns, page).tags
+    allTags.keys.sort.each |tag|
+    {
+      prefix := ns == "default" ? "" : "/$ns"
+      html += "<li><a href='$prefix/_tag/$tag'>"
+            + (tags.contains(tag) ? "<b>" : "")
+            + "$tag (${allTags[tag]})"
+            + (tags.contains(tag) ? "</b>" : "")
+            + "</a></li>"
+    }
+    return html
   }
 
   ** lambda to import page bits in a template
@@ -155,5 +177,28 @@ class PageWeblet : Weblet
 
     cached := Cache.readCachedFile(file, "parse")
     return cached.content as Str
+  }
+
+  ** Shows all knwon links for a tag
+  Void tag(Str:Str args)
+  {
+    ns := args["ns"] ?: "default"
+    nsSettings := NsSettings.loadFor(ns)
+    req.session["fantomato.ns"] = ns
+    req.session["fantomato.tpl"] = nsSettings.template
+    req.session["fantomato.page"] = "_tags"
+    tag := args["tag"]
+    res.headers["Content-Type"] = "text/html"
+    res.statusCode = 200
+
+    TaggedPage[] pages := Fantomato.tagger.send(["tag", tag]).get
+    content := "<h3>Pages with the '$tag' tag:</h3><ul>"
+    pages.each
+    {
+      content += "<li><a href='$it.link'>$it.page</a></li>"
+    }
+    content+="</ul>"
+    wholePage := templatize(ns, content, "tag", nsSettings, PageSettings{commentsEnabled = false})
+    res.out.print(wholePage).close
   }
 }

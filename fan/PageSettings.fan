@@ -24,6 +24,9 @@ class PageSettings
                    "For example keyword metadata."]}
   Str:Str variables := [:]
 
+  @Setting{help = ["Tags for this page"]}
+  Str[] tags := [,]
+
   new make(|This| f) {f(this)}
 
   static PageSettings loadFor(Str ns, Str page)
