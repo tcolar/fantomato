@@ -128,7 +128,7 @@ class PageWeblet : Weblet
     allTags.keys.sort.each |tag|
     {
       prefix := ns == "default" ? "" : "/$ns"
-      html += "<li><a href='_tag/$tag'>"
+      html += "<li><a href='_tag?tag=$tag'>"
             + (tags.contains(tag) ? "<b>" : "")
             + "$tag (${allTags[tag]})"
             + (tags.contains(tag) ? "</b>" : "")
@@ -187,7 +187,7 @@ class PageWeblet : Weblet
     req.session["fantomato.ns"] = ns
     req.session["fantomato.tpl"] = nsSettings.template
     req.session["fantomato.page"] = "_tags"
-    tag := args["tag"]
+    tag := req.uri.query["tag"]
     res.headers["Content-Type"] = "text/html"
     res.statusCode = 200
 

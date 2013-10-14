@@ -30,8 +30,8 @@ const class Fantomato : DraftMod
         Route("/{ns}/_/comments", "GET", CommentsWeblet#comments),
         Route("/_/commentAdd", "POST", CommentsWeblet#addComment),
         Route("/{ns}/_/commentAdd", "POST", CommentsWeblet#addComment),
-        Route("/_/tag/{tag}", "GET", PageWeblet#tag),
-        Route("/{ns}/_tag/{tag}", "GET", PageWeblet#tag),
+        Route("/_tag", "GET", PageWeblet#tag),
+        Route("/{ns}/_tag", "GET", PageWeblet#tag),
         // "index" routes to "home"
         Route("/", "GET", PageWeblet#page),
         // file items

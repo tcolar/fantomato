@@ -106,7 +106,7 @@ const class TaggedPage
 
   Str link()
   {
-    return /*(ns == "default" ? "" : "/$ns") +*/"/$page"
+    return (ns == "default" ? "" : "/$ns") + "/$page"
   }
 
   const Str ns
