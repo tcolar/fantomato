@@ -16,6 +16,6 @@ class Build : BuildPod
                 "mustache 1.0+", "xml 1.0+", "captcha302 1.0.0+"]
     srcDirs = [`fan/`, `fan/util/`]
     javaDirs = [`java/`]
-    version = Version("0.9.3")
+    version = Version("0.9.5")
   }
 }
