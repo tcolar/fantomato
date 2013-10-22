@@ -5,6 +5,7 @@
 using draft
 using web
 using webmod
+using netColarUtils
 
 **
 ** Server entry point
@@ -24,6 +25,24 @@ const class Fantomato : DraftMod
     logDir = `./log/`.toFile
     router = Router {
       routes = [
+        // Admin
+        Route("/_admin", "GET", AdminWeblet#index),
+        Route("/{ns}/_admin", "GET", AdminWeblet#index),
+        Route("/_/nsPages", "POST", AdminWeblet#namespacePages),
+        Route("/{ns}/_/nsPages", "POST", AdminWeblet#namespacePages),
+        Route("/_/nsFiles", "POST", AdminWeblet#namespaceFiles),
+        Route("/{ns}/_/nsFiles", "POST", AdminWeblet#namespaceFiles),
+        Route("/_/pageText", "POST", AdminWeblet#pageText),
+        Route("/{ns}/_/pageText", "POST", AdminWeblet#pageText),
+        Route("/_/save", "POST", AdminWeblet#save),
+        Route("/{ns}/_/save", "POST", AdminWeblet#save),
+        Route("/_/nsComments", "POST", AdminWeblet#namespaceComments),
+        Route("/{ns}/_/nsComments", "POST", AdminWeblet#namespaceComments),
+        Route("/_/nsOptions", "POST", AdminWeblet#namespaceOptions),
+        Route("/{ns}/_/nsOptions", "POST", AdminWeblet#namespaceOptions),
+        Route("/_/refreshTags", "POST", AdminWeblet#refreshTags),
+        Route("/{ns}/_/refreshTags", "POST", AdminWeblet#refreshTags),
+        // End Admin
         Route("/_/captcha", "GET", CommentsWeblet#captcha),
         Route("/{ns}/_/captcha", "GET", CommentsWeblet#captcha),
         Route("/_/comments", "GET", CommentsWeblet#comments),
@@ -77,7 +96,6 @@ const class Fantomato : DraftMod
     uri := `tpl/$tpl/$path`
     // If a file is not present in a custom namepace template, get it from default template
     // This allow overriding only a few files in custm templates
-    echo(GlobalSettings.root + uri)
     if( ! (GlobalSettings.root + uri).exists)
       uri = `tpl/default/$path`
     serveFile(uri, res)
@@ -108,6 +126,17 @@ const class Fantomato : DraftMod
     res.statusCode = 404
     res.out.close
     return
+  }
+
+  static Void sendJson(WebRes res, Obj obj, Int statusCode := 200)
+  {
+    res.headers["Content-Type"] = "application/json"
+    res.statusCode = statusCode
+    out := res.out
+    try
+      JsonUtils.save(out, obj)
+    finally
+    out.close
   }
 }
 

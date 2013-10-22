@@ -4,7 +4,6 @@
 
 using web
 using captcha302
-using netColarUtils
 
 **
 ** CommentsWeblet
@@ -23,7 +22,7 @@ class CommentsWeblet  : Weblet
 
   ** Will send the comments for the current page
   ** Called via Ajax
-  ** It relies on ns and page being in the session, whihc should be ok since comments are always in context of a page
+  ** It relies on ns and page being in the session, which should be ok since comments are always in context of a page
   ** If the session expires, pagination might stop working but we coud juts do a page reload then
   ** The offset can be used for pagination
   Void comments(Str:Str args)
@@ -34,7 +33,8 @@ class CommentsWeblet  : Weblet
 
     if(ns == null || pageName == null)
     {
-      sendJson([,])
+      Fantomato.sendJson(res, [,])
+      return
     }
 
     nsSettings := NsSettings.loadFor(ns)
@@ -60,11 +60,11 @@ class CommentsWeblet  : Weblet
           it.total = comments.size
           it.comments = comments[start ..< end]
         }
-        sendJson(items)
+        Fantomato.sendJson(res, items)
         return
       }
     }
-    sendJson([,])
+    Fantomato.sendJson(res, [,])
   }
 
   ** Post a comment
@@ -74,19 +74,19 @@ class CommentsWeblet  : Weblet
     pageName := req.session["fantomato.page"]
     if(ns == null || pageName == null)
     {
-      sendJson("Session as timed out. Save your text and reload the page.", 500)
+      Fantomato.sendJson(res, "Session as timed out. Save your text and reload the page.", 500)
       return
     }
     if( ! PageSettings.loadFor(ns, pageName).commentsEnabled)
     {
-      sendJson("Comments are not allowed on this page.", 500)
+      Fantomato.sendJson(res, "Comments are not allowed on this page.", 500)
       return
     }
 
     form := req.form
     if( ! gen.validate(req, form["captcha"] ?: ""))
     {
-      sendJson("Captcha code does not match.", 401)
+      Fantomato.sendJson(res, "Captcha code does not match.", 401)
       return
     }
 
@@ -101,19 +101,6 @@ class CommentsWeblet  : Weblet
     // Add the comment to file via an actor message to be safe
     Fantomato.cache.send(["addComment", ns, pageName, comment])
 
-    sendJson("Success", 200)
-  }
-
-
-  ** send the object to the browser in JSON format and commit the response
-  private Void sendJson(Obj obj, Int statusCode := 200)
-  {
-    res.headers["Content-Type"] = "application/json"
-    res.statusCode = statusCode
-    out := res.out
-    try
-      JsonUtils.save(out, obj)
-    finally
-    out.close
+    Fantomato.sendJson(res, "Success", 200)
   }
 }

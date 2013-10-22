@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <title>Admin page</title>
+      <meta name="robots" content="noindex,nofollow" />
+      <link rel='stylesheet' type='text/css' href='tpl/bootstrap.min.css' />
+      <link rel='stylesheet' type='text/css' href='tpl/standard.css' />
+      <link rel='stylesheet' type='text/css' href='tpl/template.css' />
+      <script type="text/javascript" src="tpl/jquery.min.js"></script>
+      <script type="text/javascript" src="tpl/template.js"></script>
+      <script type="text/javascript" src="tpl/epiceditor.min.js"></script>
+ </head>
+  <body>
+  <div>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <a class="brand" href="#">Fantomato</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                  <!-- #ap will call a wiki lambda that will add "class='active'" if the path matches the arg-->
+                  <li {{#ap}}page1{{/ap}}><a href="page1">Page1(.md)</a></li>
+                  <li {{#ap}}page2{{/ap}}><a href="page2">Page2(.txt)</a></li>
+                  <li {{#ap}}page3{{/ap}}><a href="page3">Page3(.html)</a></li>
+              </ul>
+           </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="margin-top:60px">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well">
+          </div>
+        </div>
+        <div class="span9">
+          <div class="content">
+             <div id="epiceditor"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+  <script>
+    var editor = new EpicEditor().load();
+  </script>
+</html>
+

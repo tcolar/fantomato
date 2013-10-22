@@ -19,11 +19,8 @@ const class TagsActor : Actor
     {
       if(msg == "run")
       {
-        // index or update index of page tags
-        // not that currently tags don't get removed until a restart
+        // Builds the index of page tags
         Str:TaggedPage[] map := [:]
-        if(Actor.locals.containsKey("fantomato.tags"))
-          map = (Str:TaggedPage[]) Actor.locals["fantomato.tags"]
 
         root := GlobalSettings.root
         root.listDirs.findAll{(it + `pages/conf/`).exists}.each
