@@ -70,9 +70,9 @@ If you enable comments, then users maybe submit them. At this time they are plai
 
 The comments support pagination via Ajax and their is a Captcha required to post comments.
 
-- **And more ...**
+- **Admin panel with markdown Editor**
 
-There are many more thing I'm planning to do when I have time, see [todo.txt](https://bitbucket.org/tcolar/fantomato/raw/tip/todo.txt).
+Under /_admin you will find all the tools to manage/edit your content, including the awesome Epic Editor.
 
 ### Installation
 
@@ -116,6 +116,8 @@ There are many more thing I'm planning to do when I have time, see [todo.txt](ht
 
 `echo "dataRoot=/data/fantomato/" > ~/fantom/etc/fantomato.props`
 
+`echo "adminPassword=MY_SECRET" >> ~/fantom/etc/fantomato.props`
+
 - Use fanr to install Fantomato:
 
 `fanr install -r http://repo.status302.com/fanr/ fantomato`
@@ -149,6 +151,8 @@ Here is what the namespace layout looks like:
 #### Creating pages
 
 Simply create a file under the pages folder with a proper name and extension, say my_page.md
+
+You can also use the admin tool at /_admin to create/edit pages
 
 Then you can go look at it at http://localhost/me/my_page/ where "me" is the namespace name.
 
