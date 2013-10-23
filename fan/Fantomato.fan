@@ -28,6 +28,10 @@ const class Fantomato : DraftMod
         // Admin
         Route("/_admin", "GET", AdminWeblet#index),
         Route("/{ns}/_admin", "GET", AdminWeblet#index),
+        Route("/_adminLogin", "POST", AdminWeblet#login),
+        Route("/{ns}/_adminLogin", "POST", AdminWeblet#login),
+        Route("/_/keepAlive", "GET", AdminWeblet#keepAlive),
+        Route("/{ns}/_/keepAlive", "GET", AdminWeblet#keepAlive),
         Route("/_/nsPages", "POST", AdminWeblet#namespacePages),
         Route("/{ns}/_/nsPages", "POST", AdminWeblet#namespacePages),
         Route("/_/nsFiles", "POST", AdminWeblet#namespaceFiles),
@@ -42,7 +46,17 @@ const class Fantomato : DraftMod
         Route("/{ns}/_/nsOptions", "POST", AdminWeblet#namespaceOptions),
         Route("/_/refreshTags", "POST", AdminWeblet#refreshTags),
         Route("/{ns}/_/refreshTags", "POST", AdminWeblet#refreshTags),
+        Route("/_/remove", "POST", AdminWeblet#remove),
+        Route("/{ns}/_/remove", "POST", AdminWeblet#remove),
+        Route("/_/rename", "POST", AdminWeblet#rename),
+        Route("/{ns}/_/rename", "POST", AdminWeblet#rename),
+        Route("/_/newPage", "POST", AdminWeblet#newPage),
+        Route("/{ns}/_/newPage", "POST", AdminWeblet#newPage),
+        Route("/_/upload", "POST", AdminWeblet#upload),
+        Route("/{ns}/_/upload", "POST", AdminWeblet#upload),
+
         // End Admin
+
         Route("/_/captcha", "GET", CommentsWeblet#captcha),
         Route("/{ns}/_/captcha", "GET", CommentsWeblet#captcha),
         Route("/_/comments", "GET", CommentsWeblet#comments),
@@ -137,6 +151,20 @@ const class Fantomato : DraftMod
       JsonUtils.save(out, obj)
     finally
     out.close
+  }
+
+  static Str pageLink(Str text)
+  {
+    result := ""
+    text.each
+    {
+      c := it.toChar
+      if(it.isAlphaNum)
+        result += c.lower
+      else if(result.isEmpty || result[-1] != '_')
+        result += "_"
+    }
+    return result
   }
 }
 

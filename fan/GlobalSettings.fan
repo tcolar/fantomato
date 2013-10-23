@@ -17,6 +17,9 @@ const class GlobalSettings
   @Transient
   static const File root := readRoot
 
+  @Transient
+  static const Str adminPassword := readAdminPassword
+
   static File readRoot()
   {
     if(! etcFile.exists)
@@ -39,6 +42,18 @@ const class GlobalSettings
       throw err
     }
     return root
+  }
+
+  static Str readAdminPassword()
+  {
+    if(! etcFile.exists)
+    {
+      err := Err("Warning : $etcFile.pathStr missing ! won't run.")
+      Fantomato.log.err("Error", err)
+      err.trace
+      throw err
+    }
+    return etcFile.readProps["adminPassword"]?.trim ?: ""
   }
 
   static GlobalSettings load()
