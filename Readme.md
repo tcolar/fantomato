@@ -7,9 +7,6 @@ It does not have yet all the features jotwiki had, however it has better perform
 At this point I still have a long [TODO](https://bitbucket.org/tcolar/fantomato/raw/tip/todo.txt) list however it is already usable and in use.
 For example I use it [here](http://www.status302.com/) and [here](http://wiki.colar.net/)
 
-While it currently lacks an "in place editor" to edit a page online, it is implemented in such
-way that it is very easy to have the content managed/stored in github or bitbucket and pulled to the wiki server.
-
 ### Features:
 
 - **Support for multiple syntaxes**:
