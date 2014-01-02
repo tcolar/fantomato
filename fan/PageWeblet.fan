@@ -31,6 +31,22 @@ class PageWeblet : Weblet
     if(page ==null || page.trim.isEmpty) page = "home"
     if(ns == null || ns.trim.isEmpty) ns = "default"
 
+    // Check for page not found first
+    Str base := "$ns/pages/${page}"
+    file := GlobalSettings.root + `${base}.html`
+    if( ! file.exists)
+      file = GlobalSettings.root + `${base}.md`
+    if( ! file.exists)
+      file = GlobalSettings.root + `${base}.txt`
+    if(! file.exists)
+    {
+      res.headers["Content-Type"] = "text/html"
+      res.statusCode = 404
+      notFound := read(ns, "404") ?: "<b>Error 404 -> Page not found : $page</b>"
+      res.out.print(notFound/*templatize(ns, notFound, "404", nsSettings, pageOpts)*/).close
+      return
+    }
+
     nsSettings := NsSettings.loadFor(ns)
     pageOpts := PageSettings.loadFor(ns, page)
 
@@ -49,14 +65,6 @@ class PageWeblet : Weblet
     content := read(ns, page)
 
     // process a page
-    if(content == null)
-    {
-      res.headers["Content-Type"] = "text/html"
-      res.statusCode = 404
-      notFound := read(ns, "404") ?: "<b>Error 404 -> Page not found : $page</b>"
-      res.out.print(templatize(ns, notFound, "404", nsSettings, pageOpts)).close
-      return
-    }
 
     // ok send the page
     Fantomato.log.info("Sending $ns :: $page")
