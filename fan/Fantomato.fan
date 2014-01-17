@@ -38,6 +38,8 @@ const class Fantomato : DraftMod
         Route("/{ns}/_/nsFiles", "POST", AdminWeblet#namespaceFiles),
         Route("/_/pageText", "POST", AdminWeblet#pageText),
         Route("/{ns}/_/pageText", "POST", AdminWeblet#pageText),
+        Route("/_/pageTags", "POST", AdminWeblet#pageTags),
+        Route("/{ns}/_/pageTags", "POST", AdminWeblet#pageTags),
         Route("/_/save", "POST", AdminWeblet#save),
         Route("/{ns}/_/save", "POST", AdminWeblet#save),
         Route("/_/nsComments", "POST", AdminWeblet#namespaceComments),

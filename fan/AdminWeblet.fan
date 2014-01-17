@@ -104,6 +104,21 @@ class AdminWeblet : Weblet
     Fantomato.sendJson(res, text, 200)
   }
 
+  Void pageTags(Str:Str args)
+  {
+    if( ! checkLoggedIn)
+      return
+    form := req.form
+    ns := form["ns"]
+    page := form["page"]
+    if(page.contains("."))
+    {
+      page = page[0 ..< page.indexr(".")]
+    }
+    tags := PageSettings.loadFor(ns, page).tags
+    Fantomato.sendJson(res, tags.join(", "), 200)
+  }
+
   Void save(Str:Str args)
   {
     if( ! checkLoggedIn)
@@ -111,6 +126,7 @@ class AdminWeblet : Weblet
     form := req.form
     page := form["page"]
     content := form["content"]
+    tags := form["tags"]
     if(page.isEmpty){
       Fantomato.sendJson(res, "Target page unknown !", 500)
       return
@@ -127,7 +143,24 @@ class AdminWeblet : Weblet
       {Fantomato.sendJson(res, e.toStr, 500); return}
     finally
       out.close
+
     now := Time.now.toLocale
+    p := page.toUri.path[-1]
+
+    if(p.contains("."))
+    {
+      p = p[0 ..< p.indexr(".")]
+    }
+    ns := form["ns"]
+    echo(p)
+    echo("ns: " + ns)
+    settings := PageSettings.loadFor(ns, p)
+    if(tags.trim != settings.tags.join(", ").trim) {
+      t := Str[,]
+      tags.trim.split(',').each{t.add(it.trim)}
+      settings.tags = t
+      settings.saveFor(ns, p)
+    }
     Fantomato.sendJson(res, "Saved at $now")
   }
 

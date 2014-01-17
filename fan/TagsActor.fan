@@ -55,7 +55,6 @@ const class TagsActor : Actor
     return null
   }
 
-  ** Generate the sitemap for a given namespace
   Void indexTags(Str:TaggedPage[] map, File nsDir)
   {
     ns := nsDir.name

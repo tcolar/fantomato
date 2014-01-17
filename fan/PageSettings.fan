@@ -37,4 +37,10 @@ class PageSettings
     cached := Cache.readCachedFile(f, "json", [PageSettings#.qname])
     return (PageSettings) (cached?.content ?: PageSettings{commentsEnabled = commentsOn})
   }
+
+  Void saveFor(Str ns, Str page)
+  {
+    File f := GlobalSettings.root + `$ns/pages/conf/${page}.conf`
+    JsonSettings{}.save(this, f.out)
+  }
 }

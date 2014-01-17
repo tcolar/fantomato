@@ -69,6 +69,12 @@ const class Cache : Actor
 
     if(cached == null || file.modified > cached.ts)
     {
+      if(!file.exists)
+      {
+        echo("Not found: $file")
+        return null
+      }
+
       Fantomato.log.info("Caching : $file.osPath")
       content := process(file, params)
       if(content != null)

@@ -124,7 +124,7 @@ class PageWeblet : Weblet
     return tpl
   }
 
-  ** lambda to show the lits of all known tags as a list (<li> tags)
+  ** Lambda to show the list of all known tags as a list (<li> tags)
   ** Tags that are active on the current page get bolded
   Func tagsLambda := |Str var, |Str->Obj?| context, Func render -> Obj?|
   {
@@ -187,7 +187,7 @@ class PageWeblet : Weblet
     return cached.content as Str
   }
 
-  ** Shows all knwon links for a tag
+  ** Shows all known links for a tag
   Void tag(Str:Str args)
   {
     ns := args["ns"] ?: "default"

@@ -94,8 +94,13 @@ $(document).ready(function() {
     $("#saved").text("");
     $("#saved").css("color", "black");
     var theContent = editor.exportFile();
-    $.post('./_/save', {page: $("#curFile").text(),
-        content : editor.exportFile()}, function(data) {
+    $.post('./_/save', {
+        page: $("#curFile").text(),
+        content : editor.exportFile(),
+        tags : $("#tags").val(),
+        ns : $("#namespace").val()
+      }
+      , function(data) {
       $("#saved").text(data);
     }).error(function(data) {
       $("#saved").css("color", "red");
@@ -165,12 +170,22 @@ function listOptions(editor){
   ).error(function(data) { alert(data.responseText); })
 }
 
+// Fetch a file and load it up in the editor
 function getFile(editor, folder, file){
-  var file = $("#namespace").val()+ "/"+folder+"/" + file;
-  $.post('./_/pageText', { page : file} ,
+  var path = $("#namespace").val()+ "/"+folder+"/" + file;
+  $.post('./_/pageText', { page : path} ,
     function( data ) {
-      $("#curFile").text(file);
+      $("#curFile").text(path);
       editor.importFile(file, data);
+    }
+  ).error(function(data) { alert(data.responseText);console.debug(data); })
+  $.post('./_/pageTags', {
+    ns : $("#namespace").val(),
+    page : file
+    } ,
+    function( data ) {
+      console.log(data);
+      $("#tags").val(data);
     }
   ).error(function(data) { alert(data.responseText);console.debug(data); })
 }
